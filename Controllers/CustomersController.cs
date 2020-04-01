@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EshopApi.Contracts;
 using EshopApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,48 +14,44 @@ namespace EshopApi.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private EshopApi_DBContext _DBContext;
+        private ICustomerRepository _customerRepository;
 
-        public CustomersController(EshopApi_DBContext context)
+        public CustomersController(ICustomerRepository customerRepository)
         {
-            _DBContext = context;
+            _customerRepository = customerRepository;
         }
 
         [HttpGet]
         public IActionResult GetCustomer()
         {
-            return new ObjectResult(_DBContext.Customer);
+            return new ObjectResult(_customerRepository.GetAll());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomer([FromRoute] int id)
         {
-            var customer = await _DBContext.Customer.SingleOrDefaultAsync(c => c.CustomerId == id);
+            var customer = await _customerRepository.Find(id);
             return Ok(customer);
         }
 
         [HttpPost]
         public async Task<IActionResult> PostCustomer([FromBody] Customer customer)
         {
-            _DBContext.Customer.Add(customer);
-            await _DBContext.SaveChangesAsync();
+            await _customerRepository.Add(customer);
             return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer([FromRoute] int id, [FromBody] Customer customer)
+        [HttpPut]
+        public async Task<IActionResult> PutCustomer( [FromBody] Customer customer)
         {
-            _DBContext.Entry(customer).State = EntityState.Modified;
-            await _DBContext.SaveChangesAsync();
+            await _customerRepository.Update(customer);
             return Ok(customer);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer([FromRoute] int id)
         {
-            var customer = await _DBContext.Customer.FindAsync(id);
-            _DBContext.Customer.Remove(customer);
-            await _DBContext.SaveChangesAsync();
+            await _customerRepository.Remove(id);
             return Ok();
         }
     }

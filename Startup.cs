@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EshopApi.Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using EshopApi.Models;
+using EshopApi.Repositories;
 
 namespace EshopApi
 {
@@ -30,8 +32,9 @@ namespace EshopApi
             services.AddControllers();
             services.AddDbContext<EshopApi_DBContext>(options => 
             {
-                options.UseSqlServer("Data Source=DESKTOP-B2K9B9K;Initial Catalog=EshopApi_DB;Integrated Security=True;");
+                options.UseSqlServer(@"Data Source=DESKTOP-MP4JNUP\KAMRAN;Initial Catalog=EshopApi_DB;Integrated Security=True;");
             });
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

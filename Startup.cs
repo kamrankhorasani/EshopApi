@@ -34,7 +34,10 @@ namespace EshopApi
             {
                 options.UseSqlServer(@"Data Source=DESKTOP-MP4JNUP\KAMRAN;Initial Catalog=EshopApi_DB;Integrated Security=True;");
             });
+
             services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ISalesPersonRepository, SalesPersonRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
